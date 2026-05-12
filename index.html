@@ -15,9 +15,6 @@
   <!-- Babel for JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
   <!-- Google Fonts: Playfair Display & Caveat -->
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
@@ -37,10 +34,23 @@
       50% { transform: rotate(15deg); }
     }
 
+    @keyframes subtleGlow {
+      0%, 100% { filter: drop-shadow(0 0 2px rgba(253,224,71,0.5)); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 10px rgba(253,224,71,0.9)); transform: scale(1.1); }
+    }
+
+    @keyframes rotateBgIcon {
+      0% { transform: rotate(12deg) scale(1); }
+      50% { transform: rotate(25deg) scale(1.1); }
+      100% { transform: rotate(12deg) scale(1); }
+    }
+
     .animate-float-math-1 { animation: floatMath 3s linear infinite; }
     .animate-float-math-2 { animation: floatMath 3s linear infinite 1s; }
     .animate-float-math-3 { animation: floatMath 3s linear infinite 2s; }
     .animate-write { animation: writeAction 0.8s ease-in-out infinite; transform-origin: 50px 55px; }
+    .animate-idea-glow { animation: subtleGlow 2.5s infinite; }
+    .animate-bg-icon { animation: rotateBgIcon 8s ease-in-out infinite; }
 
     /* АГРЕСИВЕН РЕСЕТ ЗА ПЕРФЕКТНО ПРИНТИРАНЕ НА МНОГО СТРАНИЦИ */
     @media print {
@@ -90,7 +100,7 @@
   <script type="text/babel" data-type="module">
     const { useState, useEffect } = React;
 
-    // Взимане на иконите
+    // Взимане на SVG икони
     const RefreshCwIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
     const EyeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>;
     const EyeOffIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>;
@@ -101,7 +111,8 @@
     const LightbulbIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-yellow-300 shrink-0"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>;
     const Code2Icon = ({size, className}) => <svg xmlns="http://www.w3.org/2000/svg" width={size||"24"} height={size||"24"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className || "w-4 h-4 text-blue-300 shrink-0"}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
     const PrinterIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>;
-    const XIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
+    const XIcon = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className || "w-5 h-5"}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
+    const InfoIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
 
     // ==========================================
     // АНИМИРАНО ЧОВЕЧЕ
@@ -109,32 +120,18 @@
     const AnimatedCharacterIcon = () => (
       <div className="relative w-16 h-16 shrink-0 mr-1 perspective-1000">
         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
-          {/* Плаващи математически символи */}
           <text x="15" y="30" fontSize="16" fill="#fde047" className="animate-float-math-1 font-bold">∑</text>
           <text x="75" y="25" fontSize="14" fill="#a78bfa" className="animate-float-math-2 font-bold">π</text>
           <text x="65" y="15" fontSize="12" fill="#67e8f9" className="animate-float-math-3 font-bold">x²</text>
-          
-          {/* Глава */}
           <circle cx="50" cy="35" r="14" fill="#fde047" stroke="#ca8a04" strokeWidth="2" />
-          
-          {/* Очила */}
           <circle cx="44" cy="33" r="4" fill="none" stroke="#334155" strokeWidth="1.5" />
           <circle cx="56" cy="33" r="4" fill="none" stroke="#334155" strokeWidth="1.5" />
           <line x1="48" y1="33" x2="52" y2="33" stroke="#334155" strokeWidth="1.5" />
-          
-          {/* Усмивка */}
           <path d="M46 41 Q50 45 54 41" fill="none" stroke="#334155" strokeWidth="1.5" strokeLinecap="round" />
-          
-          {/* Тяло */}
           <path d="M50 49 L50 80" stroke="#8b5cf6" strokeWidth="8" strokeLinecap="round" />
-          
-          {/* Лява ръка */}
           <path d="M50 55 L35 65" stroke="#8b5cf6" strokeWidth="4" strokeLinecap="round" />
-          
-          {/* Дясна ръка, която пише (Анимирана) */}
           <g className="animate-write">
             <path d="M50 55 L65 50 L75 42" fill="none" stroke="#8b5cf6" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-            {/* Молив */}
             <line x1="72" y1="45" x2="85" y2="28" stroke="#f87171" strokeWidth="3" strokeLinecap="round" />
             <polygon points="85,28 88,24 82,25" fill="#333" />
           </g>
@@ -142,9 +139,51 @@
       </div>
     );
 
-    // Помощни функции за изписване
+    // Помощни функции за изписване и бутони
     const sqrt = (expr) => `<span style="white-space: nowrap; font-family: serif; display: inline-flex; align-items: baseline;">&radic;<span style="border-top: 1px solid currentColor; padding-top: 1px; margin-left: -1px; line-height: 1.1;">${expr}</span></span>`;
     const frac = (num, den) => `<span style="display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 0.2em; font-size: 0.9em; line-height: 1.1; font-family: serif;"><span style="border-bottom: 1px solid currentColor; padding: 0 0.1em;">${num}</span><span style="padding: 0 0.1em;">${den}</span></span>`;
+    
+    const t = (k, val) => `<button type="button" class="term-btn text-indigo-700 bg-indigo-50 hover:bg-indigo-100 font-bold border-b-2 border-dotted border-indigo-400 hover:border-indigo-600 transition-colors rounded px-1 mx-0.5" data-term="${k}">${val}</button>`;
+
+    // РЕЧНИК С ТЕРМИНИ И ФОРМУЛИ (Разделени по фигури според контекста)
+    const TERM_INFO = {
+      'a_right': { title: 'Катет (<i>a</i>)', info: 'Страна в правоъгълен триъгълник, прилежаща към правия ъгъл.<br/><br/><b>Питагорова теорема:</b><br/> <i>a² + b² = c²</i>' },
+      'b_right': { title: 'Катет (<i>b</i>)', info: 'Страна в правоъгълен триъгълник, прилежаща към правия ъгъл.<br/><br/><b>Питагорова теорема:</b><br/> <i>a² + b² = c²</i>' },
+      'c_right': { title: 'Хипотенуза (<i>c</i>)', info: 'Хипотенуза е страната срещу правия ъгъл в правоъгълен триъгълник.<br/><br/><b>Питагорова теорема:</b><br/> <i>c² = a² + b²</i>' },
+      'a_iso': { title: 'Бедро (<i>a</i>)', info: 'Една от двете равни страни в равнобедрен триъгълник.' },
+      'c_iso': { title: 'Основа (<i>c</i>)', info: 'Третата (неравна) страна в равнобедрен триъгълник.' },
+      'a_trap': { title: 'Голяма основа (<i>a</i>)', info: 'По-дългата от двете успоредни страни в трапец.' },
+      'b_trap': { title: 'Малка основа (<i>b</i>)', info: 'По-късата от двете успоредни страни в трапец.' },
+      'c_trap': { title: 'Бедро (<i>c</i>)', info: 'Неуспоредна страна в трапец.' },
+      'hc_right': { title: 'Височина към хипотенузата (<i>h<sub>c</sub></i>)', info: `Перпендикуляр, спуснат от върха на правия ъгъл към хипотенузата <i>c</i>.<br/><br/>В правоъгълен триъгълник се намира чрез:<br/>1) Лице: <i>h<sub>c</sub></i> = ${frac('<i>a</i> &middot; <i>b</i>', '<i>c</i>')}<br/>2) Метрична зависимост: <i>h<sub>c</sub>² = a<sub>1</sub> &middot; b<sub>1</sub></i>` },
+      'hc_iso': { title: 'Височина към основата (<i>h<sub>c</sub></i>)', info: 'Перпендикуляр, спуснат от върха срещу основата към нея. В равнобедрения триъгълник тази височина е едновременно медиана, ъглополовяща и симетрала на основата.' },
+      'a1': { title: 'Проекция (<i>a<sub>1</sub></i>)', info: 'Ортогоналната проекция на катета <i>a</i> върху хипотенузата <i>c</i>.<br/><br/><b>Метрична зависимост:</b><br/> <i>a² = c &middot; a<sub>1</sub></i>' },
+      'b1': { title: 'Проекция (<i>b<sub>1</sub></i>)', info: 'Ортогоналната проекция на катета <i>b</i> върху хипотенузата <i>c</i>.<br/><br/><b>Метрична зависимост:</b><br/> <i>b² = c &middot; b<sub>1</sub></i>' },
+      'ma': { title: 'Медиана (<i>m<sub>a</sub></i>)', info: 'Отсечка, свързваща връх със средата на срещуположната страна <i>a</i>.' },
+      'mb': { title: 'Медиана (<i>m<sub>b</sub></i>)', info: 'Отсечка, свързваща връх със средата на срещуположната страна <i>b</i>.' },
+      'la': { title: 'Ъглополовяща (<i>l<sub>a</sub></i>)', info: 'Разделя ъгъла на две равни части.<br/><br/><b>Свойство:</b> Разделя срещуположната страна на части, чието отношение е равно на отношението на прилежащите към ъгъла страни.' },
+      'lb': { title: 'Ъглополовяща (<i>l<sub>b</sub></i>)', info: 'Разделя ъгъла на две равни части.<br/><br/><b>Свойство:</b> Разделя срещуположната страна на части, чието отношение е равно на отношението на прилежащите към ъгъла страни.' },
+      'ha': { title: 'Височина (<i>h<sub>a</sub></i>)', info: `Перпендикуляр, спуснат от връх към правата на срещуположната страна <i>a</i>.<br/><br/>Свързана е с лицето: <i>S</i> = ${frac('<i>a</i> &middot; <i>h<sub>a</sub></i>', '2')}` },
+      'hb': { title: 'Височина (<i>h<sub>b</sub></i>)', info: 'Перпендикуляр, спуснат от връх към правата на срещуположната страна <i>b</i>.' },
+      'r_tri': { title: 'Радиус на вписана окръжност (<i>r</i>)', info: 'Окръжност, която се допира до трите страни на триъгълника. Центърът ѝ е пресечната точка на ъглополовящите на триъгълника.<br/><br/><b>Връзка с лицето:</b> <i>S = p &middot; r</i> (където <i>p</i> е полупериметър).' },
+      'r_trap': { title: 'Радиус на вписана окръжност (<i>r</i>)', info: 'Окръжност, която се допира до четирите страни на трапеца. Центърът ѝ е пресечната точка на ъглополовящите на ъглите му.<br/><br/><b>Свойство:</b> Диаметърът е равен на височината (<i>h = 2r</i>).' },
+      'R_tri': { title: 'Радиус на описана окръжност (<i>R</i>)', info: 'Окръжност, минаваща през трите върха на триъгълника. Центърът на описаната окръжност е пресечната точка на симетралите на трите страни на триъгълника.' },
+      'R_trap': { title: 'Радиус на описана окръжност (<i>R</i>)', info: 'Окръжност, минаваща през четирите върха на трапеца. Центърът на описаната окръжност е пресечната точка на симетралите на страните му.' },
+      'R_rect': { title: 'Радиус на описана окръжност (<i>R</i>)', info: `Окръжност, минаваща през четирите върха на правоъгълника. Центърът ѝ е пресечната точка на диагоналите му, следователно <i>R</i> = ${frac('<i>d</i>', '2')}.` },
+      'S_trap': { title: 'Лице (<i>S</i>)', info: `Мярка за площта на фигурата.<br/><br/><b>Формула за лице на трапец:</b><br/> <i>S</i> = ${frac('<i>(a + b)</i>', '2')} &middot; <i>h</i>` },
+      'S_rect': { title: 'Лице (<i>S</i>)', info: 'Мярка за площта на фигурата.<br/><br/><b>Формула за лице на правоъгълник:</b><br/> <i>S = a &middot; b</i>' },
+      'S_rhombus': { title: 'Лице (<i>S</i>)', info: `Мярка за площта на фигурата.<br/><br/><b>Формули за лице на ромб:</b><br/> 1) <i>S = a &middot; h</i><br/> 2) <i>S</i> = ${frac('<i>d<sub>1</sub> &middot; d<sub>2</sub></i>', '2')}` },
+      'P': { title: 'Периметър (<i>P</i>)', info: 'Сборът от дължините на всички страни на дадена фигура.' },
+      'd': { title: 'Диагонал (<i>d</i>)', info: 'Отсечка, свързваща два несъседни върха в многоъгълник.' },
+      'd1': { title: 'Диагонал 1 (<i>d<sub>1</sub></i>)', info: 'Единият диагонал на четириъгълник. <br/><br/>В ромб диагоналите са взаимно перпендикулярни и разполовяват ъглите.' },
+      'd2': { title: 'Диагонал 2 (<i>d<sub>2</sub></i>)', info: `Вторият диагонал на четириъгълник. <br/><br/><b>Лице на ромб:</b> <i>S</i> = ${frac('<i>d<sub>1</sub> &middot; d<sub>2</sub></i>', '2')}` },
+      'h': { title: 'Височина (<i>h</i>)', info: 'Разстоянието между две успоредни прави (или страни).' },
+      'x': { title: 'Проекция (<i>x</i>)', info: `Ортогонална проекция на бедро върху основа. <br/><br/>При равнобедрен трапец: <i>x</i> = ${frac('<i>(a - b)</i>', '2')}.` },
+      'y': { title: 'Отсечка (<i>y</i>)', info: 'Част от основата на фигура или разстояние. Използва се при Питагорова теорема в по-сложни фигури.' },
+      'a': { title: 'Страна (<i>a</i>)', info: 'Основна страна на фигурата.' },
+      'b': { title: 'Страна (<i>b</i>)', info: 'Страна на фигурата.' },
+      'c': { title: 'Страна (<i>c</i>)', info: 'Страна на фигурата.' }
+    };
 
     // ==========================================
     // БАЗА ОТ ПОДБРАНИ ДАННИ
@@ -238,7 +277,7 @@
 
           if (variant === 0) {
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетите <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm. Намерете хипотенузата <i>c</i>, височината към хипотенузата <i>h<sub>c</sub></i> и проекциите <i>a<sub>1</sub></i> и <i>b<sub>1</sub></i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетите ${t('a_right', '<i>a</i>')} = ${d.a} cm и ${t('b_right', '<i>b</i>')} = ${d.b} cm. Намерете хипотенузата ${t('c_right', '<i>c</i>')}, височината към хипотенузата ${t('hc_right', '<i>h<sub>c</sub></i>')} и проекциите ${t('a1', '<i>a<sub>1</sub></i>')} и ${t('b1', '<i>b<sub>1</sub></i>')}.`,
               solution: [
                 `По <b>Питагорова теорема</b> за <i>&Delta;ABC</i> намираме хипотенузата: <br/> <i>c</i> = ${sqrt('<i>a</i>&sup2; + <i>b</i>&sup2;')} = ${sqrt(`${d.a}&sup2; + ${d.b}&sup2;`)} = ${d.c} cm.`,
                 `От формулата за лице <i>S</i> = ${frac('<i>a</i> &middot; <i>b</i>', '2')} = ${frac('<i>c</i> &middot; <i>h<sub>c</sub></i>', '2')} следва, че:<br/> <i>h<sub>c</sub></i> = ${frac('<i>a</i> &middot; <i>b</i>', '<i>c</i>')} = ${frac(`${d.a} &middot; ${d.b}`, d.c)} = ${d.hc} cm.`,
@@ -249,7 +288,7 @@
             };
           } else if (variant === 1) {
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) хипотенузата е <i>c</i> = ${d.c} cm, а проекцията на катета <i>a</i> върху нея е <i>a<sub>1</sub></i> = ${d.a1} cm. Намерете катетите <i>a</i> и <i>b</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) хипотенузата е ${t('c_right', '<i>c</i>')} = ${d.c} cm, а проекцията на катета ${t('a_right', '<i>a</i>')} върху нея е ${t('a1', '<i>a<sub>1</sub></i>')} = ${d.a1} cm. Намерете катетите ${t('a_right', '<i>a</i>')} и ${t('b_right', '<i>b</i>')}.`,
               solution: [
                 `От метричната зависимост <i>a</i>&sup2; = <i>c</i> &middot; <i>a<sub>1</sub></i> намираме катета <i>a</i>:<br/> <i>a</i> = ${sqrt('<i>c</i> &middot; <i>a<sub>1</sub></i>')} = ${sqrt(`${d.c} &middot; ${d.a1}`)} = ${sqrt(d.c * d.a1)} = ${d.a} cm.`,
                 `Проекцията на другия катет допълва хипотенузата:<br/> <i>b<sub>1</sub></i> = <i>c</i> - <i>a<sub>1</sub></i> = ${d.c} - ${d.a1} = ${d.b1} cm.`,
@@ -259,7 +298,7 @@
             };
           } else if (variant === 2) {
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени височината към хипотенузата <i>h<sub>c</sub></i> = ${d.hc} cm и проекцията <i>a<sub>1</sub></i> = ${d.a1} cm. Намерете катетите <i>a</i> и <i>b</i>, и хипотенузата <i>c</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени височината към хипотенузата ${t('hc_right', '<i>h<sub>c</sub></i>')} = ${d.hc} cm и проекцията ${t('a1', '<i>a<sub>1</sub></i>')} = ${d.a1} cm. Намерете катетите ${t('a_right', '<i>a</i>')} и ${t('b_right', '<i>b</i>')}, и хипотенузата ${t('c_right', '<i>c</i>')}.`,
               solution: [
                 `От метричната зависимост <i>h<sub>c</sub></i>&sup2; = <i>a<sub>1</sub></i> &middot; <i>b<sub>1</sub></i> намираме проекцията <i>b<sub>1</sub></i>:<br/> <i>b<sub>1</sub></i> = ${frac('<i>h<sub>c</sub></i>&sup2;', '<i>a<sub>1</sub></i>')} = ${frac(`${d.hc}&sup2;`, d.a1)} = ${d.b1} cm.`,
                 `Хипотенузата е сбор от двете проекции:<br/> <i>c = a<sub>1</sub> + b<sub>1</sub></i> = ${d.a1} + ${d.b1} = ${d.c} cm.`,
@@ -269,7 +308,7 @@
             };
           } else if (variant === 3) {
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът <i>a</i> = ${d.a} cm и хипотенузата <i>c</i> = ${d.c} cm. Намерете височината <i>h<sub>c</sub></i> и проекцията <i>a<sub>1</sub></i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът ${t('a_right', '<i>a</i>')} = ${d.a} cm и хипотенузата ${t('c_right', '<i>c</i>')} = ${d.c} cm. Намерете височината ${t('hc_right', '<i>h<sub>c</sub></i>')} и проекцията ${t('a1', '<i>a<sub>1</sub></i>')}.`,
               solution: [
                 `По <b>Питагорова теорема</b> намираме другия катет <i>b</i>:<br/> <i>b</i> = ${sqrt('<i>c</i>&sup2; - <i>a</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.a}&sup2;`)} = ${d.b} cm.`,
                 `От формулата за лице намираме височината <i>h<sub>c</sub></i>:<br/> <i>h<sub>c</sub></i> = ${frac('<i>a</i> &middot; <i>b</i>', '<i>c</i>')} = ${frac(`${d.a} &middot; ${d.b}`, d.c)} = ${d.hc} cm.`,
@@ -279,7 +318,7 @@
             };
           } else if (variant === 4) {
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) хипотенузата е <i>c</i> = ${d.c} cm, а проекцията на катета <i>b</i> върху нея е <i>b<sub>1</sub></i> = ${d.b1} cm. Намерете катетите <i>a</i> и <i>b</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) хипотенузата е ${t('c_right', '<i>c</i>')} = ${d.c} cm, а проекцията на катета ${t('b_right', '<i>b</i>')} върху нея е ${t('b1', '<i>b<sub>1</sub></i>')} = ${d.b1} cm. Намерете катетите ${t('a_right', '<i>a</i>')} и ${t('b_right', '<i>b</i>')}.`,
               solution: [
                 `От метричната зависимост <i>b</i>&sup2; = <i>c</i> &middot; <i>b<sub>1</sub></i> намираме катета <i>b</i>:<br/> <i>b</i> = ${sqrt('<i>c</i> &middot; <i>b<sub>1</sub></i>')} = ${sqrt(`${d.c} &middot; ${d.b1}`)} = ${sqrt(d.c * d.b1)} = ${d.b} cm.`,
                 `Проекцията на другия катет допълва хипотенузата:<br/> <i>a<sub>1</sub></i> = <i>c</i> - <i>b<sub>1</sub></i> = ${d.c} - ${d.b1} = ${d.a1} cm.`,
@@ -289,7 +328,7 @@
             };
           } else if (variant === 5) {
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени височината към хипотенузата <i>h<sub>c</sub></i> = ${d.hc} cm и проекцията <i>b<sub>1</sub></i> = ${d.b1} cm. Намерете катетите <i>a</i> и <i>b</i>, и хипотенузата <i>c</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени височината към хипотенузата ${t('hc_right', '<i>h<sub>c</sub></i>')} = ${d.hc} cm и проекцията ${t('b1', '<i>b<sub>1</sub></i>')} = ${d.b1} cm. Намерете катетите ${t('a_right', '<i>a</i>')} и ${t('b_right', '<i>b</i>')}, и хипотенузата ${t('c_right', '<i>c</i>')}.`,
               solution: [
                 `От метричната зависимост <i>h<sub>c</sub></i>&sup2; = <i>a<sub>1</sub></i> &middot; <i>b<sub>1</sub></i> намираме проекцията <i>a<sub>1</sub></i>:<br/> <i>a<sub>1</sub></i> = ${frac('<i>h<sub>c</sub></i>&sup2;', '<i>b<sub>1</sub></i>')} = ${frac(`${d.hc}&sup2;`, d.b1)} = ${d.a1} cm.`,
                 `Хипотенузата е сбор от двете проекции:<br/> <i>c = a<sub>1</sub> + b<sub>1</sub></i> = ${d.a1} + ${d.b1} = ${d.c} cm.`,
@@ -299,7 +338,7 @@
             };
           } else {
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът <i>b</i> = ${d.b} cm и хипотенузата <i>c</i> = ${d.c} cm. Намерете височината <i>h<sub>c</sub></i> и проекцията <i>b<sub>1</sub></i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът ${t('b_right', '<i>b</i>')} = ${d.b} cm и хипотенузата ${t('c_right', '<i>c</i>')} = ${d.c} cm. Намерете височината ${t('hc_right', '<i>h<sub>c</sub></i>')} и проекцията ${t('b1', '<i>b<sub>1</sub></i>')}.`,
               solution: [
                 `По <b>Питагорова теорема</b> намираме другия катет <i>a</i>:<br/> <i>a</i> = ${sqrt('<i>c</i>&sup2; - <i>b</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.b}&sup2;`)} = ${d.a} cm.`,
                 `От формулата за лице намираме височината <i>h<sub>c</sub></i>:<br/> <i>h<sub>c</sub></i> = ${frac('<i>a</i> &middot; <i>b</i>', '<i>c</i>')} = ${frac(`${d.a} &middot; ${d.b}`, d.c)} = ${d.hc} cm.`,
@@ -319,7 +358,7 @@
           if (variant === 0) {
             const d = getRandom(TASKS_DATA.gen2_med);
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm. Намерете медианата <i>m<sub>a</sub></i> към катета <i>a</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са ${t('a_right', '<i>a</i>')} = ${d.a} cm и ${t('b_right', '<i>b</i>')} = ${d.b} cm. Намерете медианата ${t('ma', '<i>m<sub>a</sub></i>')} към катета ${t('a_right', '<i>a</i>')}.`,
               solution: [
                 `Медианата <i>m<sub>a</sub></i> свързва върха <i>A</i> със средата <i>M</i> на катета <i>a</i> (<i>BC</i>).`,
                 `Тъй като <i>M</i> е среда, отсечката <i>CM</i> = ${frac('<i>a</i>', '2')} = ${frac(d.a, '2')} = ${d.a / 2} cm.`,
@@ -330,7 +369,7 @@
           } else if (variant === 1) {
             const d = getRandom(TASKS_DATA.gen2_med);
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm. Намерете медианата <i>m<sub>b</sub></i> към катета <i>b</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са ${t('a_right', '<i>a</i>')} = ${d.a} cm и ${t('b_right', '<i>b</i>')} = ${d.b} cm. Намерете медианата ${t('mb', '<i>m<sub>b</sub></i>')} към катета ${t('b_right', '<i>b</i>')}.`,
               solution: [
                 `Медианата <i>m<sub>b</sub></i> свързва върха <i>B</i> със средата <i>N</i> на катета <i>b</i> (<i>AC</i>).`,
                 `Тъй като <i>N</i> е среда, отсечката <i>CN</i> = ${frac('<i>b</i>', '2')} = ${frac(d.b, '2')} = ${d.b / 2} cm.`,
@@ -341,7 +380,7 @@
           } else if (variant === 2) {
             const d = getRandom(TASKS_DATA.gen2_bis);
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm. Намерете дължината на ъглополовящата <i>l<sub>a</sub></i> към катета <i>a</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са ${t('a_right', '<i>a</i>')} = ${d.a} cm и ${t('b_right', '<i>b</i>')} = ${d.b} cm. Намерете дължината на ъглополовящата ${t('la', '<i>l<sub>a</sub></i>')} към катета ${t('a_right', '<i>a</i>')}.`,
               solution: [
                 `По Питагорова теорема намираме хипотенузата: <i>c</i> = ${sqrt(`${d.a}&sup2; + ${d.b}&sup2;`)} = ${d.c} cm.`,
                 `Ъглополовящата <i>l<sub>a</sub></i> разделя катета <i>a</i> на отсечки <i>CL</i> и <i>LB</i>. Според свойството на ъглополовящата, тяхното отношение е:<br/> ${frac('<i>CL</i>', '<i>LB</i>')} = ${frac('<i>b</i>', '<i>c</i>')} = ${frac(d.b, d.c)} = ${frac(d.propA.bk, d.propA.ck)}.`,
@@ -356,7 +395,7 @@
           } else if (variant === 3) {
             const d = getRandom(TASKS_DATA.gen2_bis);
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm. Намерете дължината на ъглополовящата <i>l<sub>b</sub></i> към катета <i>b</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) катетите са ${t('a_right', '<i>a</i>')} = ${d.a} cm и ${t('b_right', '<i>b</i>')} = ${d.b} cm. Намерете дължината на ъглополовящата ${t('lb', '<i>l<sub>b</sub></i>')} към катета ${t('b_right', '<i>b</i>')}.`,
               solution: [
                 `По Питагорова теорема намираме хипотенузата: <i>c</i> = ${sqrt(`${d.a}&sup2; + ${d.b}&sup2;`)} = ${d.c} cm.`,
                 `Ъглополовящата <i>l<sub>b</sub></i> разделя катета <i>b</i> на отсечки <i>CQ</i> и <i>QA</i>. Според свойството на ъглополовящата, тяхното отношение е:<br/> ${frac('<i>CQ</i>', '<i>QA</i>')} = ${frac('<i>a</i>', '<i>c</i>')} = ${frac(d.a, d.c)} = ${frac(d.propB.ak, d.propB.ck)}.`,
@@ -371,7 +410,7 @@
           } else if (variant === 4) {
             const d = getRandom(TASKS_DATA.gen2_med);
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът <i>b</i> = ${d.b} cm и медианата към другия катет <i>m<sub>a</sub></i> = ${d.ma} cm. Намерете катета <i>a</i> и хипотенузата <i>c</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът ${t('b_right', '<i>b</i>')} = ${d.b} cm и медианата към другия катет ${t('ma', '<i>m<sub>a</sub></i>')} = ${d.ma} cm. Намерете катета ${t('a_right', '<i>a</i>')} и хипотенузата ${t('c_right', '<i>c</i>')}.`,
               solution: [
                 `Медианата <i>m<sub>a</sub></i> свързва върха <i>A</i> със средата <i>M</i> на катета <i>a</i> (<i>BC</i>).`,
                 `В правоъгълния <i>&Delta;AMC</i> прилагаме <b>Питагорова теорема</b>:<br/> <i>CM</i>&sup2; = <i>m<sub>a</sub></i>&sup2; - <i>b</i>&sup2; = ${d.maSq} - ${d.b}&sup2; = ${d.maSq - d.b*d.b}.`,
@@ -384,7 +423,7 @@
           } else {
             const d = getRandom(TASKS_DATA.gen2_med);
             return {
-              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът <i>a</i> = ${d.a} cm и медианата към другия катет <i>m<sub>b</sub></i> = ${d.mb} cm. Намерете катета <i>b</i> и хипотенузата <i>c</i>.`,
+              task: `В правоъгълен триъгълник <i>ABC</i> (<i>&ang;C</i> = 90&deg;) са дадени катетът ${t('a_right', '<i>a</i>')} = ${d.a} cm и медианата към другия катет ${t('mb', '<i>m<sub>b</sub></i>')} = ${d.mb} cm. Намерете катета ${t('b_right', '<i>b</i>')} и хипотенузата ${t('c_right', '<i>c</i>')}.`,
               solution: [
                 `Медианата <i>m<sub>b</sub></i> свързва върха <i>B</i> със средата <i>N</i> на катета <i>b</i> (<i>AC</i>).`,
                 `В правоъгълния <i>&Delta;BNC</i> прилагаме <b>Питагорова теорема</b>:<br/> <i>CN</i>&sup2; = <i>m<sub>b</sub></i>&sup2; - <i>a</i>&sup2; = ${d.mbSq} - ${d.a}&sup2; = ${d.mbSq - d.a*d.a}.`,
@@ -406,7 +445,7 @@
 
           if (variant === 0) {
             return {
-              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i> = ${d.a} cm) основата е <i>c</i> = ${d.c} cm. Намерете височините към двете бедра (<i>h<sub>a</sub></i> и <i>h<sub>b</sub></i>).`,
+              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC = ${t('a_iso', 'a')}</i> = ${d.a} cm) основата е ${t('c_iso', '<i>c</i>')} = ${d.c} cm. Намерете височините към двете бедра (${t('ha', '<i>h<sub>a</sub></i>')} и ${t('hb', '<i>h<sub>b</sub></i>')}).`,
               solution: [
                 `Тъй като триъгълникът е равнобедрен (<i>AC = BC</i>), височините, спуснати към двете равни бедра, също са равни. Следователно <b><i>h<sub>a</sub> = h<sub>b</sub></i></b>. Ще намерим височината <i>AK = h<sub>a</sub></i>.`,
                 `Нека <i>BK = x</i>, тогава <i>CK = ${d.a} - x</i>.`,
@@ -418,7 +457,7 @@
             };
           } else if (variant === 1) {
             return {
-              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i> = ${d.a} cm) основата е <i>c</i> = ${d.c} cm. Намерете медианите към двете бедра (<i>m<sub>a</sub></i> и <i>m<sub>b</sub></i>).`,
+              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC = ${t('a_iso', 'a')}</i> = ${d.a} cm) основата е ${t('c_iso', '<i>c</i>')} = ${d.c} cm. Намерете медианите към двете бедра (${t('ma', '<i>m<sub>a</sub></i>')} и ${t('mb', '<i>m<sub>b</sub></i>')}).`,
               solution: [
                 `Тъй като триъгълникът е равнобедрен, медианите към двете равни бедра също са равни: <b><i>m<sub>a</sub> = m<sub>b</sub></i></b>. Разглеждаме медианата <i>AM = m<sub>a</sub></i>.`,
                 `Спускаме височината към основата <i>CH = h<sub>c</sub></i>. По Питагорова теорема в <i>&Delta;AHC</i>: <i>h<sub>c</sub></i> = ${sqrt(`${d.a}&sup2; - ${d.c/2}&sup2;`)} = ${d.hc} cm.`,
@@ -430,7 +469,7 @@
             };
           } else if (variant === 2) {
             return {
-              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени бедрото <i>a</i> = ${d.a} cm и височината към него <i>h<sub>a</sub></i> = ${d.haStr} cm. Намерете основата <i>c</i>.`,
+              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени бедрото ${t('a_iso', '<i>a</i>')} = ${d.a} cm и височината към него ${t('ha', '<i>h<sub>a</sub></i>')} = ${d.haStr} cm. Намерете основата ${t('c_iso', '<i>c</i>')}.`,
               solution: [
                 `Височината <i>AK = h<sub>a</sub></i> = ${d.haStr} cm образува правоъгълен <i>&Delta;ACK</i> (<i>&ang;K</i> = 90&deg;).`,
                 `По <b>Питагорова теорема</b> намираме отсечката <i>CK</i>:<br/> <i>CK</i> = ${sqrt('<i>AC</i>&sup2; - <i>AK</i>&sup2;')} = ${sqrt(`${d.a}&sup2; - ${d.haSq}`)} = ${d.ck} cm.`,
@@ -441,7 +480,7 @@
             };
           } else if (variant === 3) {
             return {
-              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени основата <i>c</i> = ${d.c} cm и медианата към бедрото <i>m<sub>a</sub></i> = ${d.maStr} cm. Намерете височината към основата <i>h<sub>c</sub></i> и бедрото <i>a</i>.`,
+              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени основата ${t('c_iso', '<i>c</i>')} = ${d.c} cm и медианата към бедрото ${t('ma', '<i>m<sub>a</sub></i>')} = ${d.maStr} cm. Намерете височината към основата ${t('hc_iso', '<i>h<sub>c</sub></i>')} и бедрото ${t('a_iso', '<i>a</i>')}.`,
               solution: [
                 `Нека <i>AM = m<sub>a</sub></i>. Спускаме перпендикуляр <i>MN &perp; AB</i>. Тъй като <i>M</i> е среда на <i>BC</i>, <i>MN</i> е средна отсечка в правоъгълния <i>&Delta;HBC</i> (където <i>CH = h<sub>c</sub></i>).`,
                 `Следователно <i>MN = h<sub>c</sub> / 2</i> и <i>NB = HB / 2 = (c/2) / 2 = c/4</i> = ${d.c/4} cm.`,
@@ -454,7 +493,7 @@
             };
           } else if (variant === 4) {
             return {
-              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени основата <i>c</i> = ${d.c} cm и височината към бедрото <i>h<sub>a</sub></i> = ${d.haStr} cm. Намерете бедрото <i>a</i>.`,
+              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени основата ${t('c_iso', '<i>c</i>')} = ${d.c} cm и височината към бедрото ${t('ha', '<i>h<sub>a</sub></i>')} = ${d.haStr} cm. Намерете бедрото ${t('a_iso', '<i>a</i>')}.`,
               solution: [
                 `Височината към бедрото е <i>AK = h<sub>a</sub></i>. В правоъгълния <i>&Delta;ABK</i> по <b>Питагорова теорема</b>:<br/> <i>BK</i> = ${sqrt('<i>AB</i>&sup2; - <i>AK</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.haSq}`)} = ${d.ck} cm.`,
                 `Тъй като <i>BC = a</i>, то <i>CK = a - BK = a - ${d.ck}</i>.`,
@@ -466,7 +505,7 @@
             };
           } else {
             return {
-              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени височината към основата <i>h<sub>c</sub></i> = ${d.hc} cm и височината към бедрото <i>h<sub>a</sub></i> = ${d.haStr} cm. Намерете бедрото <i>a</i> и основата <i>c</i>.`,
+              task: `В равнобедрен триъгълник <i>ABC</i> (<i>AC = BC</i>) са дадени височината към основата ${t('hc_iso', '<i>h<sub>c</sub></i>')} = ${d.hc} cm и височината към бедрото ${t('ha', '<i>h<sub>a</sub></i>')} = ${d.haStr} cm. Намерете бедрото ${t('a_iso', '<i>a</i>')} и основата ${t('c_iso', '<i>c</i>')}.`,
               solution: [
                 `Лицето на триъгълника може да се изрази по два начина:<br/> <i>S</i> = ${frac('<i>c &middot; h<sub>c</sub></i>', '2')} = ${frac('<i>a &middot; h<sub>a</sub></i>', '2')}.`,
                 `Оттук следва: <i>c &middot; ${d.hc} = a &middot; ${d.haStr}</i> &rArr; <i>c</i> = 1.2<i>a</i>.`,
@@ -489,7 +528,7 @@
           if (variant === 0) {
             const d = getRandom(TASKS_DATA.gen4_inc);
             return {
-              task: `Равнобедрен триъгълник има основа <i>c</i> = ${d.c} cm и бедро <i>a</i> = ${d.a} cm. Намерете радиуса на вписаната окръжност <i>r</i>.`,
+              task: `Равнобедрен триъгълник има основа ${t('c_iso', '<i>c</i>')} = ${d.c} cm и бедро ${t('a_iso', '<i>a</i>')} = ${d.a} cm. Намерете радиуса на вписаната окръжност ${t('r_tri', '<i>r</i>')}.`,
               solution: [
                 `Височината към основата <i>CH = h<sub>c</sub></i> разделя <i>&Delta;ABC</i> на два еднакви правоъгълни триъгълника. Разглеждаме <i>&Delta;AHC</i>, където <i>AH = c / 2</i> = ${d.ah} cm и хипотенуза <i>AC = a</i> = ${d.a} cm.`,
                 `По <b>Питагорова теорема</b> намираме <i>h<sub>c</sub></i> = ${sqrt('<i>a</i>&sup2; - <i>AH</i>&sup2;')} = ${sqrt(`${d.a}&sup2; - ${d.ah}&sup2;`)} = ${d.hc} cm.`,
@@ -504,7 +543,7 @@
           } else if (variant === 1) {
             const d = getRandom(TASKS_DATA.gen4_inc);
             return {
-              task: `В равнобедрен триъгълник височината към основата е <i>h<sub>c</sub></i> = ${d.hc} cm, а радиусът на вписаната окръжност е <i>r</i> = ${d.r} cm. Намерете бедрото <i>a</i> и основата <i>c</i>.`,
+              task: `В равнобедрен триъгълник височината към основата е ${t('hc_iso', '<i>h<sub>c</sub></i>')} = ${d.hc} cm, а радиусът на вписаната окръжност е ${t('r_tri', '<i>r</i>')} = ${d.r} cm. Намерете бедрото ${t('a_iso', '<i>a</i>')} и основата ${t('c_iso', '<i>c</i>')}.`,
               solution: [
                 `Центърът <i>I</i> на вписаната окръжност лежи на височината <i>CH</i>, като <i>HI = r</i> = ${d.r} cm. Тогава <i>IC = h<sub>c</sub> - r</i> = ${d.hc} - ${d.r} = ${d.ic} cm.`,
                 `В правоъгълния <i>&Delta;AHC</i> отсечката <i>AI</i> е ъглополовяща. Според нейното свойство:<br/> ${frac('<i>AH</i>', '<i>AC</i>')} = ${frac('<i>HI</i>', '<i>IC</i>')} = ${frac(d.r, d.ic)} = ${frac(d.num, d.den)}.`,
@@ -518,9 +557,9 @@
           } else if (variant === 2) {
             const d = getRandom(TASKS_DATA.gen4_circ);
             return {
-              task: `За равнобедрен триъгълник са дадени височината към основата <i>h<sub>c</sub></i> = ${d.hc} cm и радиусът на описаната окръжност <i>R</i> = ${d.R} cm. Намерете бедрото <i>a</i> и основата <i>c</i>.`,
+              task: `За равнобедрен триъгълник са дадени височината към основата ${t('hc_iso', '<i>h<sub>c</sub></i>')} = ${d.hc} cm и радиусът на описаната окръжност ${t('R_tri', '<i>R</i>')} = ${d.R} cm. Намерете бедрото ${t('a_iso', '<i>a</i>')} и основата ${t('c_iso', '<i>c</i>')}.`,
               solution: [
-                `Продължаваме височината <i>h<sub>c</sub></i>, която пресича описаната окръжност в краищата на диаметър <i>CD</i> (<i>CD = 2R</i> = ${d.D} cm).`,
+                `Построяваме диаметъра <i>CD</i> (<i>CD = 2R</i> = ${d.D} cm) през върха <i>C</i>. (Тъй като триъгълникът е равнобедрен, височината лежи на същата права).`,
                 `Триъгълникът <i>&Delta;CAD</i> е правоъгълен (<i>&ang;CAD</i> = 90&deg;), защото е вписан в окръжността и <i>CD</i> е неин диаметър.`,
                 `Прилагаме метричната зависимост за катет в правоъгълния <i>&Delta;CAD</i>: <br/><i>AC</i>&sup2; = <i>CD</i> &middot; <i>CH</i> &rArr; <i>a</i>&sup2; = ${d.D} &middot; ${d.hc} = ${d.D * d.hc}.`,
                 `Оттук намираме бедрото: <i>a</i> = ${sqrt(d.D * d.hc)} = ${d.a} cm.`,
@@ -532,9 +571,9 @@
           } else if (variant === 3) {
             const d = getRandom(TASKS_DATA.gen4_circ);
             return {
-              task: `За равнобедрен триъгълник са дадени бедрото <i>a</i> = ${d.a} cm и радиусът на описаната окръжност <i>R</i> = ${d.R} cm. Намерете височината към основата <i>h<sub>c</sub></i> и основата <i>c</i>.`,
+              task: `За равнобедрен триъгълник са дадени бедрото ${t('a_iso', '<i>a</i>')} = ${d.a} cm и радиусът на описаната окръжност ${t('R_tri', '<i>R</i>')} = ${d.R} cm. Намерете височината към основата ${t('hc_iso', '<i>h<sub>c</sub></i>')} и основата ${t('c_iso', '<i>c</i>')}.`,
               solution: [
-                `Продължаваме височината <i>h<sub>c</sub></i>, която пресича описаната окръжност в краищата на диаметър <i>CD</i> (<i>CD = 2R</i> = ${d.D} cm).`,
+                `Построяваме диаметъра <i>CD</i> (<i>CD = 2R</i> = ${d.D} cm) през върха <i>C</i>. (Тъй като триъгълникът е равнобедрен, височината лежи на същата права).`,
                 `Триъгълникът <i>&Delta;CAD</i> е правоъгълен (<i>&ang;CAD</i> = 90&deg;), защото е вписан в окръжността и <i>CD</i> е неин диаметър.`,
                 `Прилагаме метричната зависимост за катет в правоъгълния <i>&Delta;CAD</i>: <br/><i>AC</i>&sup2; = <i>CD</i> &middot; <i>CH</i> &rArr; ${d.a}&sup2; = ${d.D} &middot; <i>h<sub>c</sub></i>.`,
                 `Оттук намираме височината: <i>h<sub>c</sub></i> = ${frac(`${d.a}&sup2;`, d.D)} = ${d.a*d.a / d.D} cm.`,
@@ -547,7 +586,7 @@
             const d = getRandom(TASKS_DATA.gen4_circ);
             const cHalf = d.c / 2;
             return {
-              task: `За равнобедрен триъгълник са дадени основата <i>c</i> = ${d.c} cm и радиусът на описаната окръжност <i>R</i> = ${d.R} cm (центърът ѝ е вътре в триъгълника). Намерете височината към основата <i>h<sub>c</sub></i> и бедрото <i>a</i>.`,
+              task: `За равнобедрен триъгълник са дадени основата ${t('c_iso', '<i>c</i>')} = ${d.c} cm и радиусът на описаната окръжност ${t('R_tri', '<i>R</i>')} = ${d.R} cm (центърът ѝ е вътре в триъгълника). Намерете височината към основата ${t('hc_iso', '<i>h<sub>c</sub></i>')} и бедрото ${t('a_iso', '<i>a</i>')}.`,
               solution: [
                 `Центърът <i>O</i> на описаната окръжност лежи на височината <i>h<sub>c</sub></i> (<i>CH</i>). Нека <i>OA = OC = R</i> = ${d.R} cm. Разстоянието от центъра <i>O</i> до основата е <i>OH = h<sub>c</sub> - R</i>.`,
                 `В правоъгълния <i>&Delta;AOH</i> (където <i>AH = c/2</i> = ${cHalf} cm) прилагаме <b>Питагорова теорема</b>:<br/> <i>OA</i>&sup2; = <i>AH</i>&sup2; + <i>OH</i>&sup2; &rArr; ${d.R}&sup2; = ${cHalf}&sup2; + (<i>h<sub>c</sub></i> - ${d.R})&sup2;.`,
@@ -569,7 +608,7 @@
 
           if (variant === 0) {
             return {
-              task: `Равнобедрен трапец има основи <i>a</i> = ${d.a} cm, <i>b</i> = ${d.b} cm и бедро <i>c</i> = ${d.c} cm. Намерете височината <i>h</i> и лицето на трапеца <i>S</i>.`,
+              task: `Равнобедрен трапец има основи ${t('a_trap', '<i>a</i>')} = ${d.a} cm, ${t('b_trap', '<i>b</i>')} = ${d.b} cm и бедро ${t('c_trap', '<i>c</i>')} = ${d.c} cm. Намерете височината ${t('h', '<i>h</i>')} и лицето на трапеца ${t('S_trap', '<i>S</i>')}.`,
               solution: [
                 `Проекцията на бедрото върху голямата основа е <i>x</i> = ${frac('<i>a - b</i>', '2')} = ${frac(`${d.a} - ${d.b}`, '2')} = ${d.x} cm.`,
                 `От правоъгълния триъгълник, образуван от бедрото, височината и проекцията, намираме <i>h</i> по <b>Питагорова теорема</b>:<br/> <i>h</i> = ${sqrt('<i>c</i>&sup2; - <i>x</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.x}&sup2;`)} = ${d.h} cm.`,
@@ -579,7 +618,7 @@
             };
           } else {
             return {
-              task: `В равнобедрен трапец са дадени голямата основа <i>a</i> = ${d.a} cm, височината <i>h</i> = ${d.h} cm и бедрото <i>c</i> = ${d.c} cm. Намерете малката основа <i>b</i>.`,
+              task: `В равнобедрен трапец са дадени голямата основа ${t('a_trap', '<i>a</i>')} = ${d.a} cm, височината ${t('h', '<i>h</i>')} = ${d.h} cm и бедрото ${t('c_trap', '<i>c</i>')} = ${d.c} cm. Намерете малката основа ${t('b_trap', '<i>b</i>')}.`,
               solution: [
                 `Проекцията на бедрото върху голямата основа се намира по <b>Питагорова теорема</b>:<br/> <i>x</i> = ${sqrt('<i>c</i>&sup2; - <i>h</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.h}&sup2;`)} = ${d.x} cm.`,
                 `За всеки равнобедрен трапец е вярно, че <i>x</i> = ${frac('<i>a - b</i>', '2')}. Следователно <i>b = a - 2x</i>.`,
@@ -599,7 +638,7 @@
           if (variant === 0) {
             const d = getRandom(TASKS_DATA.gen6_inc);
             return {
-              task: `В равнобедрен трапец с основи <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm е <b>вписана окръжност</b>. Намерете радиуса ѝ <i>r</i> и бедрото <i>c</i>.`,
+              task: `В равнобедрен трапец с основи ${t('a_trap', '<i>a</i>')} = ${d.a} cm и ${t('b_trap', '<i>b</i>')} = ${d.b} cm е <b>вписана окръжност</b>. Намерете радиуса ѝ ${t('r_trap', '<i>r</i>')} и бедрото ${t('c_trap', '<i>c</i>')}.`,
               solution: [
                 `Нека <i>O</i> е центърът на вписаната окръжност. Той е пресечна точка на ъглополовящите на ъглите на трапеца.`,
                 `Сборът на прилежащите ъгли към бедрото е 180&deg;, затова <i>&ang;OBC + &ang;OCB</i> = 90&deg;. Следователно <i>&Delta;OBC</i> е правоъгълен (<i>&ang;BOC</i> = 90&deg;).`,
@@ -613,12 +652,12 @@
           } else if (variant === 1) {
             const d = getRandom(TASKS_DATA.gen6_circ);
             return {
-              task: `За равнобедрен трапец са дадени основи <i>a</i> = ${d.a} cm, <i>b</i> = ${d.b} cm и бедро <i>c</i> = ${d.c} cm. Намерете радиуса <i>R</i> на <b>описаната</b> около трапеца окръжност.`,
+              task: `За равнобедрен трапец са дадени основи ${t('a_trap', '<i>a</i>')} = ${d.a} cm, ${t('b_trap', '<i>b</i>')} = ${d.b} cm и бедро ${t('c_trap', '<i>c</i>')} = ${d.c} cm. Намерете радиуса ${t('R_trap', '<i>R</i>')} на <b>описаната</b> около трапеца окръжност.`,
               solution: [
                 `Окръжността, описана около трапеца, съвпада с окръжността, описана около <i>&Delta;ABC</i>.`,
                 `Проекцията на бедрото е <i>x</i> = ${frac('<i>a - b</i>', '2')} = ${d.x} cm. По <b>Питагорова теорема</b> височината <i>h</i> = ${sqrt(`<i>c</i>&sup2; - <i>x</i>&sup2;`)} = ${d.h} cm.`,
                 `Разглеждаме правоъгълния <i>&Delta;AHC</i>, където <i>AH = a - x</i> = ${d.a} - ${d.x} = ${d.ah} cm. По <b>Питагорова теорема</b> намираме диагонала:<br/> <i>AC = d</i> = ${sqrt('<i>AH</i>&sup2; + <i>h</i>&sup2;')} = ${sqrt(`${d.ah}&sup2; + ${d.h}&sup2;`)} = ${d.dStr} cm.`,
-                `Продължаваме височината <i>CH</i>, която пресича описаната окръжност в краищата на диаметър <i>CE</i> (<i>CE = 2R</i>).`,
+                `Построяваме диаметъра <i>CE</i> (<i>CE = 2R</i>) през точка <i>C</i>.`,
                 `Триъгълникът <i>&Delta;CAE</i> е правоъгълен (<i>&ang;CAE</i> = 90&deg;), защото е вписан и се опира на диаметър.`,
                 `Триъгълниците <i>&Delta;CAE</i> и <i>&Delta;CHB</i> са подобни (правоъгълни с равен остър ъгъл <i>&ang;AEC = &ang;ABC</i>, тъй като се опират на дъгата <i>&frown;AC</i>).`,
                 `От подобието им следва: ${frac('<i>CE</i>', '<i>CB</i>')} = ${frac('<i>AC</i>', '<i>CH</i>')} &rArr; ${frac('<i>2R</i>', '<i>c</i>')} = ${frac('<i>d</i>', '<i>h</i>')} &rArr; <i>R</i> = ${frac('<i>c &middot; d</i>', '<i>2h</i>')}.`,
@@ -629,10 +668,10 @@
           } else if (variant === 2) {
             const d = getRandom(TASKS_DATA.gen6_inc);
             return {
-              task: `В равнобедрен трапец е вписана окръжност с радиус <i>r</i> = ${d.r} cm. Бедрото на трапеца е <i>c</i> = ${d.c} cm. Намерете основите <i>a</i> и <i>b</i>.`,
+              task: `В равнобедрен трапец е вписана окръжност с радиус ${t('r_trap', '<i>r</i>')} = ${d.r} cm. Проекцията на бедрото върху голямата основа е ${t('x', '<i>x</i>')} = ${d.x} cm. Намерете бедрото ${t('c_trap', '<i>c</i>')} и основите ${t('a_trap', '<i>a</i>')} и ${t('b_trap', '<i>b</i>')}.`,
               solution: [
                 `Височината на трапеца е равна на диаметъра на вписаната окръжност:<br/> <i>h = 2r</i> = 2 &middot; ${d.r} = ${d.h} cm.`,
-                `Проекцията на бедрото върху голямата основа намираме по <b>Питагорова теорема</b>:<br/> <i>x</i> = ${sqrt('<i>c</i>&sup2; - <i>h</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.h}&sup2;`)} = ${d.x} cm.`,
+                `От правоъгълния триъгълник, образуван от бедрото, височината и проекцията, по <b>Питагорова теорема</b> намираме бедрото:<br/> <i>c</i> = ${sqrt('<i>x</i>&sup2; + <i>h</i>&sup2;')} = ${sqrt(`${d.x}&sup2; + ${d.h}&sup2;`)} = ${d.c} cm.`,
                 `Тъй като трапецът е описан около окръжност, сборът от срещуположните му страни е равен: <i>a + b = 2c</i> = ${2*d.c} cm.`,
                 `От свойството на проекцията знаем, че <i>a - b = 2x</i> = ${2*d.x} cm.`,
                 `Съставяме система:<br/> 1) <i>a + b</i> = ${2*d.c}<br/> 2) <i>a - b</i> = ${2*d.x}<br/> Събираме ги: 2<i>a</i> = ${2*d.c + 2*d.x} &rArr; <i>a</i> = ${d.a} cm, съответно <i>b</i> = ${d.b} cm.`
@@ -642,16 +681,17 @@
           } else {
             const d = getRandom(TASKS_DATA.gen6_circ);
             return {
-              task: `За равнобедрен трапец са дадени голямата основа <i>a</i> = ${d.a} cm, височината <i>h</i> = ${d.h} cm и радиусът на описаната окръжност <i>R</i> = ${d.RStr} cm. Намерете малката основа <i>b</i> и бедрото <i>c</i>.`,
+              task: `За равнобедрен трапец са дадени бедрото ${t('c_trap', '<i>c</i>')} = ${d.c} cm, диагоналът ${t('d', '<i>d</i>')} = ${d.dStr} cm и радиусът на описаната окръжност ${t('R_trap', '<i>R</i>')} = ${d.RStr} cm. Намерете височината ${t('h', '<i>h</i>')} и основите ${t('a_trap', '<i>a</i>')} и ${t('b_trap', '<i>b</i>')}.`,
               solution: [
-                `Центърът <i>O</i> на описаната окръжност лежи на оста на симетрия. Нека разстоянието от <i>O</i> до голямата основа <i>a</i> е <i>y</i>.`,
-                `Разглеждаме правоъгълния триъгълник, образуван от <i>O</i>, върха <i>A</i> и средата на <i>a</i>. По <b>Питагорова теорема</b>:<br/> <i>y</i>&sup2; = <i>R</i>&sup2; - (<i>a/2</i>)&sup2; = ${d.Rsq} - ${d.ah}&sup2; = ${d.y**2} &rArr; <i>y</i> = ${d.y} cm.`,
-                `Разстоянието от <i>O</i> до малката основа <i>b</i> е <i>h - y = ${d.h} - ${d.y} = ${d.hy}</i> cm.`,
-                `От аналогичния триъгълник за малката основа: (<i>b/2</i>)&sup2; = <i>R</i>&sup2; - (<i>h - y</i>)&sup2; = ${d.Rsq} - (${d.hy})&sup2; = ${d.bHalfSq}.`,
-                `Следователно <i>b/2</i> = ${Math.sqrt(d.bHalfSq)} cm &rArr; <i>b</i> = ${d.b} cm.`,
-                `Проекцията на бедрото е <i>x = (a - b) / 2</i> = ${d.x} cm. По <b>Питагорова теорема</b> намираме бедрото:<br/> <i>c</i> = ${sqrt('<i>x</i>&sup2; + <i>h</i>&sup2;')} = ${sqrt(`${d.x}&sup2; + ${d.h}&sup2;`)} = ${d.c} cm.`
+                `Окръжността, описана около трапеца, съвпада с окръжността, описана около <i>&Delta;ABC</i>. Построяваме височината <i>CH = h</i> и диаметъра <i>CE = 2R</i>.`,
+                `Вписаният <i>&Delta;CAE</i> е правоъгълен (<i>&ang;CAE</i> = 90&deg;). Триъгълниците <i>&Delta;CAE</i> и <i>&Delta;CHB</i> са подобни, тъй като имат равен остър ъгъл (<i>&ang;AEC</i> = <i>&ang;ABC</i> като вписани ъгли срещу дъгата <i>&frown;AC</i>).`,
+                `От подобието получаваме: ${frac('<i>CE</i>', '<i>CB</i>')} = ${frac('<i>AC</i>', '<i>CH</i>')} &rArr; ${frac('<i>2R</i>', '<i>c</i>')} = ${frac('<i>d</i>', '<i>h</i>')}.`,
+                `Оттук намираме височината: <i>h</i> = ${frac('<i>c &middot; d</i>', '<i>2R</i>')} = ${d.h} cm.`,
+                `В правоъгълния <i>&Delta;BHC</i> по <b>Питагорова теорема</b> намираме проекцията на бедрото:<br/> <i>x = HB</i> = ${sqrt('<i>c</i>&sup2; - <i>h</i>&sup2;')} = ${d.x} cm.`,
+                `В правоъгълния <i>&Delta;AHC</i> по <b>Питагорова теорема</b> намираме:<br/> <i>AH</i> = ${sqrt('<i>d</i>&sup2; - <i>h</i>&sup2;')} = ${d.ah} cm.`,
+                `Основите на трапеца са:<br/> <i>a = AH + x</i> = ${d.ah} + ${d.x} = ${d.a} cm<br/> <i>b = AH - x</i> = ${d.ah} - ${d.x} = ${d.b} cm.`
               ],
-              drawing: 'iso-trapezoid-circumscribed-pythagoras'
+              drawing: 'iso-trapezoid-circumscribed-similar'
             };
           }
         }
@@ -665,7 +705,7 @@
           if (variant === 0) {
             const d = getRandom(TASKS_DATA.gen7_basic);
             return {
-              task: `Правоъгълен трапец има успоредни основи <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm. По-голямото бедро е <i>c</i> = ${d.c} cm. Намерете малкото бедро (височината <i>h</i>) и лицето на трапеца <i>S</i>.`,
+              task: `Правоъгълен трапец има успоредни основи ${t('a_trap', '<i>a</i>')} = ${d.a} cm и ${t('b_trap', '<i>b</i>')} = ${d.b} cm. По-голямото бедро е ${t('c_trap', '<i>c</i>')} = ${d.c} cm. Намерете малкото бедро (височината ${t('h', '<i>h</i>')}) и лицето на трапеца ${t('S_trap', '<i>S</i>')}.`,
               solution: [
                 `Спускаме височината от тъпия ъгъл. Тя отрязва правоъгълен триъгълник с хипотенуза <i>c</i> = ${d.c} и катет <i>x = a - b</i> = ${d.a} - ${d.b} = ${d.x} cm.`,
                 `По <b>Питагорова теорема</b> намираме височината (която съвпада с малкото бедро):<br/> <i>h</i> = ${sqrt('<i>c</i>&sup2; - <i>x</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.x}&sup2;`)} = ${d.h} cm.`,
@@ -676,7 +716,7 @@
           } else {
             const d = getRandom(TASKS_DATA.gen7_inc);
             return {
-              task: `В правоъгълен трапец с основи <i>a</i> = ${d.a} cm и <i>b</i> = ${d.b} cm е <b>вписана окръжност</b>. Намерете радиуса ѝ <i>r</i> и голямото бедро <i>c</i>.`,
+              task: `В правоъгълен трапец с основи ${t('a_trap', '<i>a</i>')} = ${d.a} cm и ${t('b_trap', '<i>b</i>')} = ${d.b} cm е <b>вписана окръжност</b>. Намерете радиуса ѝ ${t('r_trap', '<i>r</i>')} и голямото бедро ${t('c_trap', '<i>c</i>')}.`,
               solution: [
                 `Нека <i>O</i> е центърът на вписаната окръжност. Той лежи на ъглополовящите на ъглите при върховете <i>B</i> и <i>C</i>.`,
                 `Тъй като <i>&ang;C + &ang;B</i> = 180&deg;, то <i>&ang;OCB + &ang;OBC</i> = 90&deg;. Следователно <i>&Delta;OBC</i> е правоъгълен (<i>&ang;BOC</i> = 90&deg;).`,
@@ -700,7 +740,7 @@
           if (variant === 0) {
             const d = getRandom(TASKS_DATA.gen8_parall);
             return {
-              task: `Даден е успоредник <i>ABCD</i> (<i>&ang;BAD < 90&deg;</i>). Височината <i>h<sub>a</sub> = DD<sub>1</sub></i> (<i>D<sub>1</sub> &isin; AB</i>) е ${d.ha} cm и дели страната <i>AB</i> на отсечки <i>AD<sub>1</sub></i> = ${d.x} cm и <i>BD<sub>1</sub></i> = ${d.y} cm. Намерете страната <i>AD</i>, диагоналите <i>BD</i> и <i>AC</i>, и височината <i>h<sub>b</sub></i>.`,
+              task: `Даден е успоредник <i>ABCD</i> (<i>&ang;BAD < 90&deg;</i>). Височината ${t('ha', '<i>h<sub>a</sub></i>')} = DD<sub>1</sub> (<i>D<sub>1</sub> &isin; AB</i>) е ${d.ha} cm и дели страната <i>AB</i> на отсечки <i>AD<sub>1</sub></i> = ${t('x', d.x)} cm и <i>BD<sub>1</sub></i> = ${t('y', d.y)} cm. Намерете страната <i>AD</i>, диагоналите <i>BD</i> и <i>AC</i>, и височината ${t('hb', '<i>h<sub>b</sub></i>')}.`,
               solution: [
                 `В правоъгълния <i>&Delta;ADD<sub>1</sub></i> (<i>&ang;D<sub>1</sub> = 90&deg;</i>) по <b>Питагорова теорема</b> намираме: <br/><i>AD</i>&sup2; = <i>AD<sub>1</sub></i>&sup2; + <i>DD<sub>1</sub></i>&sup2; = ${d.x}&sup2; + ${d.ha}&sup2; = ${d.x**2} + ${d.ha**2} = ${d.AD**2} &rArr; <i>AD</i> = ${d.AD} cm.`,
                 `В правоъгълния <i>&Delta;BDD<sub>1</sub></i> по <b>Питагорова теорема</b>: <br/><i>BD</i>&sup2; = <i>BD<sub>1</sub></i>&sup2; + <i>DD<sub>1</sub></i>&sup2; = ${d.y}&sup2; + ${d.ha}&sup2; = ${d.y**2} + ${d.ha**2} = ${d.bdSq} &rArr; <i>BD</i> = ${d.bdStr} cm.`,
@@ -716,7 +756,7 @@
             const subVariant = Math.floor(Math.random() * 2);
             if (subVariant === 0) {
               return {
-                task: `Едната страна на правоъгълник е с ${d.diff} cm по-голяма от другата. Диагоналът му е <i>d</i> = ${d.d} cm. Намерете периметъра <i>P</i> и лицето на правоъгълника <i>S</i>.`,
+                task: `Едната страна на правоъгълник е с ${d.diff} cm по-голяма от другата. Диагоналът му е ${t('d', '<i>d</i>')} = ${d.d} cm. Намерете периметъра ${t('P', '<i>P</i>')} и лицето на правоъгълника ${t('S_rect', '<i>S</i>')}.`,
                 solution: [
                   `Нека страните са <i>a</i> и <i>b</i>, като <i>a = b + ${d.diff}</i>.`,
                   `Диагоналът разделя правоъгълника на два правоъгълни триъгълника. По <b>Питагорова теорема</b>:<br/> <i>a</i>&sup2; + <i>b</i>&sup2; = <i>d</i>&sup2; &rArr; (<i>b + ${d.diff}</i>)&sup2; + <i>b</i>&sup2; = ${d.d}&sup2;.`,
@@ -729,7 +769,7 @@
               };
             } else {
               return {
-                task: `Едната страна на правоъгълник е с ${d.diff} cm по-голяма от другата. Лицето му е <i>S</i> = ${d.S} cm&sup2;. Намерете диагонала на правоъгълника <i>d</i> и радиуса на описаната около него окръжност <i>R</i>.`,
+                task: `Едната страна на правоъгълник е с ${d.diff} cm по-голяма от другата. Лицето му е ${t('S_rect', '<i>S</i>')} = ${d.S} cm&sup2;. Намерете диагонала на правоъгълника ${t('d', '<i>d</i>')} и радиуса на описаната около него окръжност ${t('R_rect', '<i>R</i>')}.`,
                 solution: [
                   `Нека по-малката страна е <i>b</i>, тогава по-голямата е <i>a = b + ${d.diff}</i>.`,
                   `Лицето е <i>S = a &middot; b</i> &rArr; (<i>b</i> + ${d.diff})<i>b</i> = ${d.S} &rArr; <i>b</i>&sup2; + ${d.diff}<i>b</i> - ${d.S} = 0.`,
@@ -743,7 +783,7 @@
           } else {
             const d = getRandom(TASKS_DATA.gen8_rhombus);
             return {
-              task: `Ромбът <i>ABCD</i> има лице <i>S</i> = ${d.S} cm&sup2; и разликата на диагоналите му е ${d.diff} cm. Намерете диагоналите, страната на ромба <i>a</i> и височината му <i>h</i>.`,
+              task: `Ромбът <i>ABCD</i> има лице ${t('S_rhombus', '<i>S</i>')} = ${d.S} cm&sup2; и разликата на диагоналите му е ${d.diff} cm. Намерете диагоналите ${t('d1', '<i>d<sub>1</sub></i>')} и ${t('d2', '<i>d<sub>2</sub></i>')}, страната на ромба ${t('a', '<i>a</i>')} и височината му ${t('h', '<i>h</i>')}.`,
               solution: [
                 `Нека диагоналите са <i>d<sub>1</sub></i> и <i>d<sub>2</sub></i>, като <i>d<sub>1</sub> - d<sub>2</sub> = ${d.diff} &rArr; d<sub>1</sub> = d<sub>2</sub> + ${d.diff}</i>.`,
                 `Лицето на ромба е <i>S</i> = ${frac('<i>d<sub>1</sub> &middot; d<sub>2</sub></i>', '2')} &rArr; ${frac(`(<i>d<sub>2</sub></i> + ${d.diff})<i>d<sub>2</sub></i>`, '2')} = ${d.S}.`,
@@ -916,38 +956,6 @@
               </React.Fragment>
             );
 
-          case 'isosceles-triangle-circles-both':
-            return (
-              <React.Fragment>
-                <circle cx="100" cy="106.2" r="69.2" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="3 3"/>
-                <circle cx="100" cy="96.1" r="33.9" fill="none" stroke="#10b981" strokeWidth="2" />
-                <polygon points="100,37 165,130 35,130" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinejoin="round" />
-                
-                <circle cx="100" cy="106.2" r="2" fill="#94a3b8" />
-                <circle cx="100" cy="96.1" r="2" fill="#10b981" />
-                <line x1="100" y1="96.1" x2="100" y2="130" stroke="#10b981" strokeWidth="1.5" />
-                
-                {showSolution && (
-                  <g className="animate-in fade-in duration-500">
-                    <line x1="100" y1="130" x2="100" y2="175.4" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 2" />
-                    <line x1="35" y1="130" x2="100" y2="175.4" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 2" />
-                    <circle cx="100" cy="175.4" r="2" fill="#94a3b8" />
-                    <text x="94" y="190" className="text-sm font-bold font-serif italic fill-slate-500">D</text>
-                    <path d="M 39.6 123.4 L 46.2 128 L 41.6 134.6" fill="none" stroke="#94a3b8" strokeWidth="1.5" />
-                    <text x="105" y="140" className="text-xs font-bold font-serif italic fill-gray-700">H</text>
-                  </g>
-                )}
-
-                <line x1="100" y1="106.2" x2="165" y2="130" stroke="#94a3b8" strokeWidth="1.5" />
-                
-                <text x="105" y="125" className="text-xs font-bold font-serif italic fill-emerald-600">r</text>
-                <text x="125" y="112" className="text-xs font-bold font-serif italic fill-slate-500">R</text>
-                <text x="95" y="30" className="text-sm font-bold font-serif italic fill-gray-700">C</text>
-                <text x="20" y="140" className="text-sm font-bold font-serif italic fill-gray-700">A</text>
-                <text x="175" y="140" className="text-sm font-bold font-serif italic fill-gray-700">B</text>
-              </React.Fragment>
-            );
-            
           case 'isosceles-triangle-circles-circum-find':
             return (
               <React.Fragment>
@@ -1244,7 +1252,7 @@
       };
 
       return (
-        <div style={{ height: isPrint ? '180px' : '224px' }} className={`w-full bg-white flex items-center justify-center ${isPrint ? '' : 'mb-6 border border-indigo-100 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.03)]'}`}>
+        <div style={{ height: isPrint ? '180px' : '224px' }} className={`w-full bg-white flex items-center justify-center ${isPrint ? 'border border-gray-300 rounded-lg' : 'mb-6 border border-indigo-100 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.03)]'}`}>
           <svg viewBox={viewBoxStr} className="w-full h-full max-w-[280px]">
             {renderSvgContent()}
           </svg>
@@ -1271,6 +1279,9 @@
       const [showPrintView, setShowPrintView] = useState(false);
       const [showPrintHint, setShowPrintHint] = useState(false);
 
+      // Състояние за информационния панел (термин)
+      const [activeTermInfo, setActiveTermInfo] = useState(null);
+
       const generateNewProblem = (categoryId) => {
         if (categoryId === ALL_ID) {
           const generator = generators[currentSeqIndex];
@@ -1281,11 +1292,23 @@
           setCurrentProblem({ ...generator.generate(), categoryTitle: generator.title });
         }
         setShowSolution(false);
+        setActiveTermInfo(null);
       };
 
       useEffect(() => {
         generateNewProblem(ALL_ID);
       }, []);
+
+      // Прихващане на кликове върху бутоните с термини
+      const handleTaskClick = (e) => {
+        const btn = e.target.closest('.term-btn');
+        if (btn) {
+          const termKey = btn.getAttribute('data-term');
+          if (TERM_INFO[termKey]) {
+            setActiveTermInfo(TERM_INFO[termKey]);
+          }
+        }
+      };
 
       // Логика за активиране на учителски режим (5 клика)
       const handleHeaderClick = () => {
@@ -1313,8 +1336,12 @@
            const generator = generators.find(g => g.id === catId);
            if(generator) {
               for(let i=0; i<numPerType; i++) {
+                 // За принтиране махаме бутоните и ги оставяме като обикновен текст, за да е чисто
+                 const problem = generator.generate();
+                 const cleanTask = problem.task.replace(/<button[^>]*>|<\/button>/gi, '');
                  problems.push({
-                    ...generator.generate(),
+                    ...problem,
+                    task: cleanTask,
                     categoryTitle: generator.title
                  });
               }
@@ -1324,7 +1351,6 @@
         setIsTeacherMode(false);
         setShowPrintView(true);
         
-        // Автоматично показване на указанието за печат
         setTimeout(() => {
            setShowPrintHint(true);
         }, 300);
@@ -1356,7 +1382,7 @@
               </div>
             </div>
             
-            {/* Съдържание на работния лист */}
+            {/* Съдържание на работния лист - Класическо блок позициониране за сигурно принтиране */}
             <div className="max-w-4xl mx-auto pb-10">
               <h1 className="text-2xl font-bold text-center mb-8 uppercase tracking-widest border-b-2 border-black pb-4">
                 Работен лист: Решаване на триъгълник, трапец и успоредник
@@ -1424,6 +1450,30 @@
       return (
         <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-cyan-50 font-sans text-slate-800 flex flex-col selection:bg-indigo-200 selection:text-indigo-900">
           
+          {/* Информационен панел (Справочник) */}
+          {activeTermInfo && (
+             <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-[200] p-4 animate-in fade-in duration-200" onClick={() => setActiveTermInfo(null)}>
+                <div className="bg-white rounded-2xl shadow-2xl p-7 w-full max-w-sm transform transition-all relative border-t-[5px] border-indigo-500" onClick={e => e.stopPropagation()}>
+                   <button onClick={() => setActiveTermInfo(null)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full p-1.5 transition-colors">
+                      <XIcon className="w-4 h-4" />
+                   </button>
+                   <div className="flex items-center gap-3 mb-5 border-b border-slate-100 pb-4">
+                      <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600 border border-indigo-100 shadow-sm">
+                        <InfoIcon />
+                      </div>
+                      <h3 className="text-xl font-bold font-playfair text-indigo-900" dangerouslySetInnerHTML={{__html: activeTermInfo.title}}></h3>
+                   </div>
+                   <p className="text-slate-700 leading-relaxed text-[1.05rem]" dangerouslySetInnerHTML={{__html: activeTermInfo.info}}></p>
+                   
+                   <div className="mt-6 text-center">
+                     <button onClick={() => setActiveTermInfo(null)} className="px-6 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg font-bold transition-colors w-full">
+                       Разбрах
+                     </button>
+                   </div>
+                </div>
+             </div>
+          )}
+
           {/* Хедър с тайно активиране */}
           <header 
              onClick={handleHeaderClick}
@@ -1495,23 +1545,23 @@
 
               {/* Специален панел за авторство */}
               <div className="mt-auto pt-4 pb-2">
-                <div className="bg-gradient-to-br from-indigo-900 to-violet-900 p-5 rounded-2xl text-indigo-50 shadow-xl relative overflow-hidden border border-indigo-700/50">
-                  <div className="absolute -top-6 -right-6 opacity-10 transform rotate-12">
+                <div className="bg-gradient-to-br from-indigo-900 to-violet-900 p-5 rounded-2xl text-indigo-50 shadow-xl relative overflow-hidden border border-indigo-700/50 group cursor-default">
+                  <div className="absolute -top-4 -right-4 opacity-10 animate-bg-icon">
                     <Code2Icon size="100" className="text-white" />
                   </div>
-                  <h4 className="font-playfair font-bold text-base mb-3 text-indigo-200 flex items-center gap-2">
+                  <h4 className="font-playfair font-bold text-base mb-3 text-indigo-200 flex items-center gap-2 relative z-10">
                      Съвместен проект
                   </h4>
-                  <p className="text-[0.85rem] leading-relaxed opacity-95 space-y-2">
-                    <span className="flex items-center gap-2">
-                       <LightbulbIcon />
-                       <span><b>Идея и подбор на задачите:</b> Валя Витковска</span>
-                    </span>
-                    <span className="flex items-center gap-2">
-                       <Code2Icon />
+                  <div className="text-[0.85rem] leading-relaxed opacity-95 space-y-3 relative z-10">
+                    <div className="flex items-center gap-2.5">
+                       <div className="animate-idea-glow shrink-0"><LightbulbIcon /></div>
+                       <span><b>Идея и пед. решения:</b> Валя Витковска</span>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                       <Code2Icon className="w-4 h-4 text-blue-300 shrink-0 transition-transform duration-700 group-hover:rotate-180" />
                        <span><b>Реализация:</b> AI Gemini</span>
-                    </span>
-                  </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </aside>
@@ -1545,12 +1595,14 @@
                       {/* Чертеж */}
                       <SvgDrawing type={currentProblem.drawing} showSolution={showSolution} isPrint={false} />
 
-                      {/* Текст на задачата - Формат "Учебник" */}
+                      {/* Текст на задачата - Интерактивен */}
                       <div className="relative border-l-[5px] border-indigo-600 bg-gradient-to-r from-indigo-50/50 to-transparent p-6 sm:p-8 rounded-r-2xl mb-8 shadow-[inset_2px_0_10px_rgba(79,70,229,0.03)]">
-                        <span className="absolute -top-3 left-6 bg-white px-4 py-0.5 text-xs font-bold tracking-widest text-indigo-700 border border-indigo-100 rounded-full shadow-sm">
-                          ЗАДАЧА
+                        <span className="absolute -top-3 left-6 bg-white px-4 py-0.5 text-xs font-bold tracking-widest text-indigo-700 border border-indigo-100 rounded-full shadow-sm flex items-center gap-1.5">
+                          <LightbulbIcon />
+                          КЛИКНЕТЕ ВЪРХУ ОЗНАЧЕНИЯТА ЗА ПОДСКАЗКА
                         </span>
-                        <h3 className="text-xl text-slate-800 leading-relaxed font-playfair font-semibold"
+                        <h3 className="text-xl text-slate-800 leading-relaxed font-playfair font-semibold mt-2"
+                            onClick={handleTaskClick}
                             dangerouslySetInnerHTML={{ __html: currentProblem.task }}>
                         </h3>
                       </div>
@@ -1605,7 +1657,7 @@
 
           {/* ================= УЧИТЕЛСКИ ПАНЕЛ (МОДАЛ) ================= */}
           {isTeacherMode && (
-            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[300] p-4">
                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-300">
                   
                   <div className="bg-gradient-to-r from-indigo-800 to-violet-800 px-6 py-4 flex justify-between items-center text-white">
@@ -1614,7 +1666,7 @@
                         <h2 className="font-bold text-lg tracking-wide uppercase font-playfair">Учителски режим - Работен лист</h2>
                      </div>
                      <button onClick={() => setIsTeacherMode(false)} className="hover:bg-white/20 p-1.5 rounded-lg transition-colors">
-                        <XIcon />
+                        <XIcon className="text-white" />
                      </button>
                   </div>
 
