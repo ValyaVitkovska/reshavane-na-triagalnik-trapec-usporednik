@@ -668,10 +668,10 @@
           } else if (variant === 2) {
             const d = getRandom(TASKS_DATA.gen6_inc);
             return {
-              task: `В равнобедрен трапец е вписана окръжност с радиус ${t('r_trap', '<i>r</i>')} = ${d.r} cm. Проекцията на бедрото върху голямата основа е ${t('x', '<i>x</i>')} = ${d.x} cm. Намерете бедрото ${t('c_trap', '<i>c</i>')} и основите ${t('a_trap', '<i>a</i>')} и ${t('b_trap', '<i>b</i>')}.`,
+              task: `В равнобедрен трапец е вписана окръжност с радиус ${t('r_trap', '<i>r</i>')} = ${d.r} cm. Бедрото на трапеца е ${t('c_trap', '<i>c</i>')} = ${d.c} cm. Намерете основите ${t('a_trap', '<i>a</i>')} и ${t('b_trap', '<i>b</i>')}.`,
               solution: [
                 `Височината на трапеца е равна на диаметъра на вписаната окръжност:<br/> <i>h = 2r</i> = 2 &middot; ${d.r} = ${d.h} cm.`,
-                `От правоъгълния триъгълник, образуван от бедрото, височината и проекцията, по <b>Питагорова теорема</b> намираме бедрото:<br/> <i>c</i> = ${sqrt('<i>x</i>&sup2; + <i>h</i>&sup2;')} = ${sqrt(`${d.x}&sup2; + ${d.h}&sup2;`)} = ${d.c} cm.`,
+                `Проекцията на бедрото върху голямата основа намираме по <b>Питагорова теорема</b>:<br/> <i>x</i> = ${sqrt('<i>c</i>&sup2; - <i>h</i>&sup2;')} = ${sqrt(`${d.c}&sup2; - ${d.h}&sup2;`)} = ${d.x} cm.`,
                 `Тъй като трапецът е описан около окръжност, сборът от срещуположните му страни е равен: <i>a + b = 2c</i> = ${2*d.c} cm.`,
                 `От свойството на проекцията знаем, че <i>a - b = 2x</i> = ${2*d.x} cm.`,
                 `Съставяме система:<br/> 1) <i>a + b</i> = ${2*d.c}<br/> 2) <i>a - b</i> = ${2*d.x}<br/> Събираме ги: 2<i>a</i> = ${2*d.c + 2*d.x} &rArr; <i>a</i> = ${d.a} cm, съответно <i>b</i> = ${d.b} cm.`
@@ -956,6 +956,38 @@
               </React.Fragment>
             );
 
+          case 'isosceles-triangle-circles-both':
+            return (
+              <React.Fragment>
+                <circle cx="100" cy="106.2" r="69.2" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="3 3"/>
+                <circle cx="100" cy="96.1" r="33.9" fill="none" stroke="#10b981" strokeWidth="2" />
+                <polygon points="100,37 165,130 35,130" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinejoin="round" />
+                
+                <circle cx="100" cy="106.2" r="2" fill="#94a3b8" />
+                <circle cx="100" cy="96.1" r="2" fill="#10b981" />
+                <line x1="100" y1="96.1" x2="100" y2="130" stroke="#10b981" strokeWidth="1.5" />
+                
+                {showSolution && (
+                  <g className="animate-in fade-in duration-500">
+                    <line x1="100" y1="130" x2="100" y2="175.4" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 2" />
+                    <line x1="35" y1="130" x2="100" y2="175.4" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 2" />
+                    <circle cx="100" cy="175.4" r="2" fill="#94a3b8" />
+                    <text x="94" y="190" className="text-sm font-bold font-serif italic fill-slate-500">D</text>
+                    <path d="M 39.6 123.4 L 46.2 128 L 41.6 134.6" fill="none" stroke="#94a3b8" strokeWidth="1.5" />
+                    <text x="105" y="140" className="text-xs font-bold font-serif italic fill-gray-700">H</text>
+                  </g>
+                )}
+
+                <line x1="100" y1="106.2" x2="165" y2="130" stroke="#94a3b8" strokeWidth="1.5" />
+                
+                <text x="105" y="125" className="text-xs font-bold font-serif italic fill-emerald-600">r</text>
+                <text x="125" y="112" className="text-xs font-bold font-serif italic fill-slate-500">R</text>
+                <text x="95" y="30" className="text-sm font-bold font-serif italic fill-gray-700">C</text>
+                <text x="20" y="140" className="text-sm font-bold font-serif italic fill-gray-700">A</text>
+                <text x="175" y="140" className="text-sm font-bold font-serif italic fill-gray-700">B</text>
+              </React.Fragment>
+            );
+            
           case 'isosceles-triangle-circles-circum-find':
             return (
               <React.Fragment>
@@ -1555,7 +1587,7 @@
                   <div className="text-[0.85rem] leading-relaxed opacity-95 space-y-3 relative z-10">
                     <div className="flex items-center gap-2.5">
                        <div className="animate-idea-glow shrink-0"><LightbulbIcon /></div>
-                       <span><b>Идея и пед. решения:</b> Валя Витковска</span>
+                       <span><b>Идея и педагогически решения:</b> Валя Витковска</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                        <Code2Icon className="w-4 h-4 text-blue-300 shrink-0 transition-transform duration-700 group-hover:rotate-180" />
